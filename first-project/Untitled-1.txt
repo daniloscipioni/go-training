@@ -1,0 +1,2 @@
+Strings literais "" - interpreta \n \t
+Raw Strings literais - Não interpreta nada - Mostra do jeito que está
