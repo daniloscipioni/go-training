@@ -1,42 +1,31 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+)
 
-func main()  {
-	par := make(chan int)
-	impar := make(chan int)
-	quit := make(chan bool)
+func main() {
+	c := gen()
+	receive(c)
 
-	go mandaNumero(par, impar, quit)
-	recebe(par, impar, quit)
+	fmt.Println("about to exit")
 }
 
+func gen() <-chan int {
+	c := make(chan int)
 
-func mandaNumero(par,impar chan int, quit chan bool)  {
-	number := 50
-	for i := 0; i < number; i++ {
-		if i%2 ==0 {
-			par<-i
-		}else{
-			impar<-i
+	go func() {
+		for i := 0; i < 100; i++ {
+			c <- i
 		}
-	}
-	close(par)
-	close(impar)
-	quit <- true
+		close(c)
+	}()
+	return c
 }
 
-func recebe(par,impar chan int, quit chan bool)  {
-for{
-	select{
-		// Se o elemento estiver no canal Par
-	case v:= <-par:
-		fmt.Println("Par:", v)
-		// Se o elemento estiver no canal Impar
-	case v:= <-impar:
-		fmt.Println("Impar:", v)
-	case <-quit:
-		return
+func receive(i <-chan int)  {
+	for v := range i {
+		fmt.Println("channel", v)
 	}
-}
+	
 }
